@@ -1,0 +1,25 @@
+{
+  "name": "lmr-hh/mec-ics",
+  "description": "Exposes a public ICS URL for events in the modern events calendar.",
+  "type": "wordpress-plugin",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "LMR\\MecIcs\\": "includes/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Landesmusikrat Hamburg",
+      "email": "info@lmr-hh.de"
+    }
+  ],
+  "require": {
+    "jsvrcek/ics": "^0.8.4",
+    "yahnis-elsts/plugin-update-checker": "^5.0"
+  },
+  "require-dev": {
+    "wp-cli/wp-cli-bundle": "^2.7",
+    "johnpbloch/wordpress-core": "^6.1"
+  }
+}
