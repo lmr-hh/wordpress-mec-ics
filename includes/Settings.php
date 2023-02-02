@@ -26,14 +26,14 @@ class Settings {
 		add_settings_section(
 			'mec-ics-section-feed',
 			esc_html__( 'Feed Settings', 'mec-ics' ),
-			[ $this, 'renderGeneralSectionDescription', ],
+			[ $this, 'renderSection', ],
 			'mec-ics-settings-page',
 			[ 'description' => __( 'The ICS feed contains the events you created in Modern Events Calendar.', 'mec-ics' ), ]
 		);
 		add_settings_section(
 			'mec-ics-section-advanced',
 			esc_html__( 'Advanced', 'mec-ics' ),
-			[ $this, 'displayAdvancedSectionDescription', ],
+			[ $this, 'renderSection', ],
 			'mec-ics-settings-page',
 			[ 'description' => __( "In this section you can configure some of the technical details that typically won't be seed by the end users.", 'mec-ics' ), ]
 		);

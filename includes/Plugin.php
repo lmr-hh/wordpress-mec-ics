@@ -47,10 +47,23 @@ class Plugin {
 	}
 
 	private function __construct() {
-		# $this->loadI18n();
+		add_action( 'plugins_loaded', [ $this, 'loadI18n' ] );
 		add_action( 'plugins_loaded', [ $this, 'checkDependencies' ] );
 		$settings = new Settings();
 		$feed     = new Feed();
+	}
+
+	/**
+	 * Loads the plugin's text domain.
+	 *
+	 * @return void
+	 */
+	function loadI18n() {
+		load_plugin_textdomain(
+			'mec-ics',
+			false,
+			dirname( plugin_basename( __FILE__ ), 2 ) . '/languages/'
+		);
 	}
 
 	/**

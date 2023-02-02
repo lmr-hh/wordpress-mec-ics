@@ -1,0 +1,216 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-02T21:07:03+00:00\n"
+"PO-Revision-Date: 2023-02-02 22:40+0100\n"
+"Last-Translator: Kim Wittenburg <codello@wittenburg.kim>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2.2\n"
+"X-Domain: includes\n"
+
+#: Plugin.php:83
+msgid ""
+"Modern Events Calendar plugin not found. The plugin <b>ICS for Modern Events "
+"Calendar</b> requires an active installation of the Modern Events Calendar "
+"plugin."
+msgstr ""
+"Das Plugin „Modern Events Calendar“ wurde nicht gefunden. Das Plugin <b>ICS "
+"für Modern Events Calendar</b> funktioniert nur zusammen mit einer aktiven "
+"Modern Events Calendar Installation."
+
+#: Settings.php:28
+msgid "Feed Settings"
+msgstr "Feed-Einstellungen"
+
+#: Settings.php:31
+msgid "The ICS feed contains the events you created in Modern Events Calendar."
+msgstr "Der ICS-Feed enthält die Events aus dem Modern Events Calendar."
+
+#: Settings.php:35
+msgid "Advanced"
+msgstr "Erweiterte Einstellungen"
+
+#: Settings.php:38
+msgid ""
+"In this section you can configure some of the technical details that "
+"typically won't be seed by the end users."
+msgstr ""
+"In diesem Abschnitt können technische Details konfiguriert werden, die die "
+"meisten Endnutzer nicht sehen werden."
+
+#: Settings.php:44
+msgid "Feed Slug"
+msgstr "Feed-Slug"
+
+#: Settings.php:52
+msgid "Feed Name"
+msgstr "Feed-Name"
+
+#: Settings.php:60
+msgid "Private Events"
+msgstr "Private Veranstaltungen"
+
+#: Settings.php:68
+msgid "Time Interval"
+msgstr "Zeitintervall"
+
+#: Settings.php:75
+msgid "Event Limit"
+msgstr "Anzahl Veranstaltungen"
+
+#: Settings.php:85
+msgid "Product Identifier"
+msgstr "Product Identifier"
+
+#: Settings.php:93
+msgid "Event UID Format"
+msgstr "UID-Format für Ereignisse"
+
+#: Settings.php:195
+msgid ""
+"The ICS feed is published as a wordpress feed. The slug of the feed "
+"determines the URL at which the feed will be found.<br /><b>Attention</b>: "
+"If you use the slug of a default feed (rss, rss2, rdf, atom) the ICS feed "
+"will replace the default feed."
+msgstr ""
+"Der ICS-Feed wird als WordPress-Feed veröffentlicht. Der Slug bestimmt die "
+"URL unter der der Feed aufgerufen werden kann.<br /><b>Achtung</b>: Wenn Sie "
+"den Slug eines Standard-Feeds verwenden (rss, rss2, rdf, atom), wird dieser "
+"Standard-Feed durch den ICS-Feed ersetzt."
+
+#: Settings.php:199
+msgid "The ICS feed currently available at <code>%s</code>"
+msgstr "Der ICS-Feed kann unter <code>%s</code> abgerufen werden."
+
+#: Settings.php:201
+msgid ""
+"Currently the ICS feed is not configured. Enter a feed slug to enable the "
+"feed."
+msgstr ""
+"Der ICS-Feed ist zur Zeit nicht konfiguriert. Geben Sie einen Slug ein, um "
+"den Feed zu aktivieren."
+
+#: Settings.php:215
+msgid ""
+"The name of the feed is typically show as the default calendar name when a "
+"user subscribes to the feed via URL."
+msgstr ""
+"Der Name des Feeds wird üblicherweise als vorgeschlagener Name angezeigt, "
+"wenn man den Feed per URL abonniert."
+
+#: Settings.php:228
+msgid "Include Private Events in Feed"
+msgstr "Private Veranstaltungen im Feed einschließen"
+
+#: Settings.php:231
+msgid ""
+"If checked events set to private will be included in the ICS feed. The "
+"events will have their classification to <code>PRIVATE</code>."
+msgstr ""
+"Wenn ausgewählt, werden Veranstaltungen, die in WordPress als „Privat“ "
+"eingestellt sind, ebenfalls im ICS-Feed veröffentlicht. Die Ereignisse haben "
+"ihre Klassifizierung auf <code>PRIVATE</code> gesetzt, wie das angezeigt "
+"wird, ist aber abhängig von der Implementierung des ICS-Clients."
+
+#: Settings.php:241
+msgid "Days before today:"
+msgstr "Tage in die Vergangenheit:"
+
+#: Settings.php:244
+msgid "Days after today:"
+msgstr "Tage in die Zukunft:"
+
+#: Settings.php:248
+msgid ""
+"By default only events within a specific time interval are included in the "
+"ICS feed. You can configure the time interval. You can remove either or both "
+"intervals to include all past or future events. In order to reduce database "
+"load it is recommended to set a time interval that is large enough for your "
+"needs. By default events are included if their date is at most 90 days in "
+"the past and 365 days in the future."
+msgstr ""
+"Standardmäßig werden nur Veranstaltungen innerhalb eines bestimmten "
+"Zeitraumes im ICS-Feed eingeschlossen. Sie können den Zeitintervall "
+"konfigurieren. Wenn eines oder beide Felder leer sind, wird in die "
+"entsprechende Richtung keine Begrenzung vorgenommen, d.h. es werden alle "
+"Ereignisse aus der Vergangenheit oder der Zukunft eingeschlossen. "
+"Standardmäßig werden Veranstaltungen berücksichtigt, die höchstens 90 Tage "
+"in der Vergangenheit oder 365 Tage in der Zukunft liegen."
+
+#: Settings.php:265
+msgid "The number of past days must be a positive number."
+msgstr "Das Zeitintervall muss aus positiven ganzen Zahlen bestehen."
+
+#: Settings.php:286
+msgid "The number of future days must be a positive number."
+msgstr "Das Zeitintervall muss aus positiven, ganzen Zahlen bestehen."
+
+#: Settings.php:303
+msgid ""
+"The maximum number of events included in the calendar at any time. This "
+"should be sufficiently high to include all upcoming events as clients "
+"usually do not support pagination. Set to <code>0</code> or leave empty if "
+"you don't want to enforce a limit. The recommended approach to limit the "
+"number of events is to use the time interval setting above."
+msgstr ""
+"Die maximale Anzahl von Veranstaltungen, die der ICS-Feed anzeigt. Dieser "
+"Wert sollte ausreichend groß sein, um alle bevorstehenden Ereignisse "
+"einzuschließen, da keine Paginierung vorgenommen wird. Setzen Sie diesen "
+"Wert auf <code>0</code> oder lassen Sie ihn leer, um keine Begrenzung "
+"vorzunehmen. Das empfohlene Vorgehen ist, statt dieses Wertes eine "
+"Begrenzung durch das obige Zeitintervall vorzunehmen."
+
+#: Settings.php:320
+msgid "The event limit must be a positive number."
+msgstr "Das Veranstaltungslimit muss eine positive, ganze Zahl sein."
+
+#: Settings.php:337
+msgid ""
+"You can supply your own product ID. This is typically a <a href=\"https://en."
+"wikipedia.org/wiki/Formal_Public_Identifier\" target=\"_blank\">FPI value</"
+"a> but can technically be any string."
+msgstr ""
+"Sie können Ihre eigene Product ID angeben. Dies ist üblicherweise ein <a "
+"href=„https://en.wikipedia.org/wiki/Formal_Public_Identifier“ "
+"target=„_blank“>Formal Public Identifier</a>, kann aber grundsätzlich ein "
+"beliebiger Wert sein."
+
+#: Settings.php:350
+msgid ""
+"The format must contain the <code>%d</code> format specified which will be "
+"replaced by the ID of the respective event. It is not required that the UID "
+"has an email-like format."
+msgstr ""
+"Dieses Format muss den <code>%d</code> Platzhalter beinhalten. Dieser wird "
+"durch die ID der jeweiligen Veranstaltung ersetzt. Der Wert muss kein E-Mail-"
+"Format haben."
+
+#: Settings.php:354
+msgid ""
+"It looks like the event UID does not contain a format specifier. If all "
+"events have the same UID it may confuse some ICS clients."
+msgstr ""
+"Es scheint als ob die Veranstaltungs-UID keinen Platzhalter enthält. Wenn "
+"alle Veranstaltungen dieselbe UID haben, kann das ICS-Clients durcheinander "
+"bringen."
+
+#: Settings.php:365 Settings.php:385
+msgid "ICS Feed Settings"
+msgstr "ICS-Feed Einstellungen"
+
+#: Settings.php:365
+msgid "ICS Feed"
+msgstr "ICS-Feed"
+
+#: Settings.php:378
+msgid ""
+"Settings Saved. You might need to save your permalink structure in order for "
+"the feed to become available."
+msgstr ""
+"Einstellungen gespeichert. Sie müssen möglicherweise die Permalink-Struktur "
+"sichern, damit der Feed aufgerufen werden kann."

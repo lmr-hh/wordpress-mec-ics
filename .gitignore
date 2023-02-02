@@ -1,1 +1,4 @@
 vendor
+
+languages/*.pot
+languages/*.mo

@@ -14,6 +14,10 @@
       "email": "info@lmr-hh.de"
     }
   ],
+  "scripts": {
+    "extract-strings": "./scripts/extract-strings.sh",
+    "compile-languages": "./vendor/bin/wp i18n make-mo ./languages"
+  },
   "require": {
     "jsvrcek/ics": "^0.8.4",
     "yahnis-elsts/plugin-update-checker": "^5.0"
