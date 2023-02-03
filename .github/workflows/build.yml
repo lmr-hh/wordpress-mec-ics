@@ -62,18 +62,18 @@ jobs:
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.version.outputs.filename }}
-          path: build/${{ steps.version.outputs.filename }}
+          name: mec-ics-${{ steps.version.outputs.version }}
+          path: |
+            build/
+            !build/*.zip
           if-no-files-found: error
       - name: Publish Release Assets
         if: ${{ github.event_name == 'release' }}
         run: >
-          gh api
-          --method POST
-          -H "Accept: application/vnd.github+json"
-          "$UPLOAD_URL?name=$FILENAME"
-          -f '@build/$FILENAME'
+          gh release upload
+          --repo "$GITHUB_REPOSITORY"
+          "${GITHUB_REF#refs/tags/}"
+          "build/$FILENAME"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          UPLOAD_URL: ${{ github.event.release.upload_url }}
           FILENAME: ${{ steps.version.outputs.filename }}
