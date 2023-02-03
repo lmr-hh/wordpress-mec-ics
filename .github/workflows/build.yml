@@ -1,0 +1,79 @@
+name: Build
+on:
+  push:
+    branches: [main]
+    tags:
+  release:
+    types: [ published ]
+
+jobs:
+  build:
+    name: Build Plugin
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'release' || ! github.event.release.draft }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Fetch Latest Release
+        id: git
+        if: ${{ ! startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          TAG=$(curl -fsSL \
+                     "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest" \
+                     --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+                | jq -r .tag_name)
+          git fetch --shallow-exclude "$TAG"
+          git fetch origin --deepen 1 +refs/tags/$TAG:refs/tags/$TAG
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set Version Number
+        id: version
+        run: |
+          SHA=$(echo $GITHUB_SHA | cut -b 1-8)
+          COMMITS=$(git rev-list $TAG..$GITHUB_SHA --count)
+          if [[ $GITHUB_REF == refs/tags/* ]] || [[ "$COMMITS" -eq "0" ]]; then
+            VERSION=$(git describe --tags)
+          elif [[ $GITHUB_REF == refs/heads/$DEFAULT_BRANCH ]] && [[ "$COMMITS" -gt "0" ]]; then
+            VERSION="$TAG-$COMMITS+$SHA"
+          elif [[ $GITHUB_REF == refs/heads/* ]] && [[ "$COMMITS" -gt "0" ]]; then
+            VERSION="$TAG-dev.$COMMITS+$SHA"
+          else
+            VERSION="$TAG+$SHA"
+          fi
+          echo "version=${VERSION#v}" >> $GITHUB_OUTPUT
+          echo "filename=mec-ics-${VERSION#v}.zip" >> $GITHUB_OUTPUT
+        env:
+          TAG: ${{ steps.git.outputs.tag }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          tools: composer
+      - name: Install dependencies
+        run: composer install --no-dev --no-progress
+      - name: Build Plugin
+        run: composer run-script build -- --version "$VERSION" --zip --filename "$FILENAME"
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          FILENAME: ${{ steps.version.outputs.filename }}
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.version.outputs.filename }}
+          path: build/${{ steps.version.outputs.filename }}
+          if-no-files-found: error
+      - name: Publish Release Assets
+        if: ${{ github.event_name == 'release' }}
+        run: >
+          gh api
+          --method POST
+          -H "Accept: application/vnd.github+json"
+          "$UPLOAD_URL?name=$FILENAME"
+          -f '@build/$FILENAME'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPLOAD_URL: ${{ github.event.release.upload_url }}
+          FILENAME: ${{ steps.version.outputs.filename }}

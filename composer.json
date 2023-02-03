@@ -21,8 +21,8 @@
     }
   },
   "scripts": {
-    "build": "./scripts/build.sh",
-    "clean": "rm -rf ./build",
+    "build": "./scripts/build.sh --dir build",
+    "clean": "rm -rf ./build/*.zip ./build/mec-ics/*",
     "lint": "./vendor/bin/phpcs includes --ignore=index.php",
     "extract-strings": "./scripts/extract-strings.sh",
     "compile-languages": "./vendor/bin/wp i18n make-mo ./languages"
