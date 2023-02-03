@@ -2,19 +2,27 @@
   "name": "lmr-hh/mec-ics",
   "description": "ICS Feed for Modern Events Calendar WordPress plugin.",
   "type": "wordpress-plugin",
+  "homepage": "https://github.com/lmr-hh/wordpress-mec-ics",
+  "readme": "README.md",
   "license": "MIT",
+  "authors": [
+    {
+      "name": "Landesmusikrat Hamburg",
+      "email": "info@lmr-hh.de",
+      "homepage": "https://www.lmr-hh.de"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/lmr-hh/wordpress-mec-ics/issues"
+  },
   "autoload": {
     "psr-4": {
       "LMR\\MecIcs\\": "includes/"
     }
   },
-  "authors": [
-    {
-      "name": "Landesmusikrat Hamburg",
-      "email": "info@lmr-hh.de"
-    }
-  ],
   "scripts": {
+    "build": "./scripts/build.sh",
+    "clean": "rm -rf ./build",
     "lint": "./vendor/bin/phpcs includes --ignore=index.php",
     "extract-strings": "./scripts/extract-strings.sh",
     "compile-languages": "./vendor/bin/wp i18n make-mo ./languages"

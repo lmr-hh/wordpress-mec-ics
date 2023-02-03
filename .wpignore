@@ -1,0 +1,23 @@
+# This file will be used as an --exclude-from file for rsync. It is intended to be used to select
+# the correct files to include in the final plugin build.
+
+# The build folder is our target. Don't recursively include it.
+build
+
+# Git and project files
+.git
+.gitignore
+.github
+.idea
+
+# Don't copy vendor files from our build environment. Instead install dependencies fresh
+vendor/
+
+# Development files
+scripts/
+.wpignore
+phpcs.xml
+README.md
+
+# macOS files
+.DS_Store
