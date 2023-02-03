@@ -1,8 +1,17 @@
 <?php
+/**
+ * This file contains the main plugin logic of generating a CSV feed.
+ *
+ * @package mec-ics
+ */
+
+declare( strict_types=1 );
 
 namespace LMR\MecIcs;
 
 use DateTime;
+use Exception;
+use Jsvrcek\ICS\Exception\CalendarEventException;
 use \MEC\Events\Event;
 
 use \Jsvrcek\ICS\Model\Calendar;
@@ -19,15 +28,21 @@ use \Jsvrcek\ICS\Utility\Formatter;
  */
 class Feed {
 	/**
-	 * @var array Known locations from the events calendar.
+	 * Known locations from the events calendar.
+	 *
+	 * @var array
 	 */
 	private array $locations;
 	/**
-	 * @var array Known geos from the events calendar.
+	 * Known geos from the events calendar.
+	 *
+	 * @var array
 	 */
 	private array $geos;
 	/**
-	 * @var array Known organizers from the event calendar.
+	 * Known organizers from the event calendar.
+	 *
+	 * @var array
 	 */
 	private array $organizers;
 
@@ -35,18 +50,19 @@ class Feed {
 	 * Registers the required hooks to display the feed.
 	 */
 	public function __construct() {
-		add_action( 'query_vars', [ $this, 'registerQueryVars' ] );
-		add_action( 'init', [ $this, 'registerFeed' ] );
+		add_action( 'query_vars', [ $this, 'register_query_vars' ] );
+		add_action( 'init', [ $this, 'register_feed' ] );
 	}
 
 	/**
-	 * Register additional query variables. The additional variables are used to filter the ICS feed.
+	 * Register additional query variables. The additional variables are used to filter the ICS
+	 * feed.
 	 *
 	 * @param array $vars The current query vars.
 	 *
-	 * @return mixed
+	 * @return array
 	 */
-	public function registerQueryVars( array $vars ) {
+	public function register_query_vars( array $vars ): array {
 		$vars[] = 'tags';
 		$vars[] = 'categories';
 		$vars[] = 'labels';
@@ -61,26 +77,26 @@ class Feed {
 	 *
 	 * @return void
 	 */
-	public function registerFeed() {
+	public function register_feed() {
 		$feed = get_option( 'mec-ics-feed-slug' );
 		if ( $feed ) {
-			add_feed( $feed, [ $this, 'renderICSFeed' ] );
+			add_feed( $feed, [ $this, 'render_ics_feed' ] );
 		}
 	}
 
 
 	/**
-	 * Loads all known locations from the events calendar and stores them in an ICS compatible format. This populates
-	 * the `$this->locations` variable.
+	 * Loads all known locations from the events calendar and stores them in an ICS compatible
+	 * format. This populates the `$this->locations` variable.
 	 *
 	 * @return void
 	 */
-	private function loadLocations() {
-		$locationTerms = get_terms( 'mec_location' );
-		# Known meta fields are: address, latitude, longitude, url, thumbnail
+	private function load_locations() {
+		// Known meta fields are: address, latitude, longitude, url, thumbnail.
+		$location_terms = get_terms( 'mec_location' );
 
 		$this->locations = [];
-		foreach ( $locationTerms as $term ) {
+		foreach ( $location_terms as $term ) {
 			$location = new Location();
 			$name     = $term->name;
 			$address  = get_term_meta( $term->term_id, 'address', true );
@@ -97,20 +113,20 @@ class Feed {
 	}
 
 	/**
-	 * Loads all known geos from the events calendar and stores them in an ICS compatible format. This populates
-	 * the `$this->geos` variable. The geos are extracted from the locations.
+	 * Loads all known geos from the events calendar and stores them in an ICS compatible format.
+	 * This populates the `$this->geos` variable. The geos are extracted from the locations.
 	 *
 	 * @return void
 	 */
-	private function loadGeos() {
-		$locationTerms = get_terms( 'mec_location' );
-		# Known meta fields are: address, latitude, longitude, url, thumbnail
-		$this->geos = [];
-		foreach ( $locationTerms as $term ) {
+	private function load_geos() {
+		// Known meta fields are: address, latitude, longitude, url, thumbnail.
+		$location_terms = get_terms( 'mec_location' );
+		$this->geos     = [];
+		foreach ( $location_terms as $term ) {
 			$geo = new Geo();
 			$geo->setLatitude( get_term_meta( $term->term_id, 'latitude', true ) );
 			$geo->setLongitude( get_term_meta( $term->term_id, 'longitude', true ) );
-			if ( $geo->getLatitude() == 0 || $geo->getLongitude() == 0 ) {
+			if ( intval( $geo->getLatitude() ) === 0 || intval( $geo->getLongitude() ) === 0 ) {
 				$this->geos[ $term->term_id ] = null;
 			} else {
 				$this->geos[ $term->term_id ] = $geo;
@@ -119,17 +135,20 @@ class Feed {
 	}
 
 	/**
-	 * Loads all known organizers from the events calendar and stores them in an ICS compatible format. This populates
-	 * the `$this->organizers` variable.
+	 * Loads all known organizers from the events calendar and stores them in an ICS compatible
+	 * format. This populates the `$this->organizers` variable.
+	 *
+	 * @param Formatter $formatter A `Formatter` instance used by the calendar.
 	 *
 	 * @return void
 	 */
-	private function loadOrganizers( Formatter $formatter ) {
-		$organizerTerms = get_terms( 'mec_organizer' );
-		# Known meta fields are: tel, email, url, thumbnail, page_label, facebook, instagram, twitter, linkedin
+	private function load_organizers( Formatter $formatter ) {
+		// Known meta fields are: tel, email, url, thumbnail, page_label,
+		// facebook, instagram, twitter, linkedin.
+		$organizer_terms  = get_terms( 'mec_organizer' );
 		$this->organizers = [];
 
-		foreach ( $organizerTerms as $term ) {
+		foreach ( $organizer_terms as $term ) {
 			$organizer = new Organizer( $formatter );
 			$organizer->setName( $term->name );
 			$url       = get_term_meta( $term->term_id, 'url', true );
@@ -137,10 +156,10 @@ class Feed {
 			$telephone = get_term_meta( $term->term_id, 'tel', true );
 			if ( $url ) {
 				$organizer->setValue( $url );
-			} else if ( $email ) {
-				$organizer->setValue( "mailto:" . $email );
-			} else if ( $telephone ) {
-				$organizer->setValue( "tel:" . $telephone );
+			} elseif ( $email ) {
+				$organizer->setValue( 'mailto:' . $email );
+			} elseif ( $telephone ) {
+				$organizer->setValue( 'tel:' . $telephone );
 			}
 			$this->organizers[ $term->term_id ] = $organizer;
 		}
@@ -150,33 +169,33 @@ class Feed {
 	 * Renders the ICS feed.
 	 *
 	 * @return void
+	 * @throws Exception If the calendar cannot be encoded.
 	 */
-	public function renderICSFeed() {
+	public function render_ics_feed() {
 		$formatter = new Formatter();
 		// Loading these terms beforehand is an optimization. Because the linked
 		// terms are also stored as post meta fields we don't need to query the DB
 		// for related terms for each event.
-		$this->loadLocations();
-		$this->loadGeos();
-		$this->loadOrganizers( $formatter );
+		$this->load_locations();
+		$this->load_geos();
+		$this->load_organizers( $formatter );
 
 		$calendar = new Calendar();
 		$calendar->setProdId( get_option( 'mec-ics-prodid' ) );
 		$calendar->setName( get_option( 'mec-ics-feed-name' ) );
-		// TODO: Maybe allow setting an image for the whole calendar
-		// TODO: Maybe allow setting the calendar's color
+		// TODO: Maybe allow setting an image for the whole calendar.
+		// TODO: Maybe allow setting the calendar's color.
 		$calendar->setTimezone( wp_timezone() );
 
-		foreach ( $this->fetchFeedEvents() as $event ) {
-			$calendar->addEvent( $this->makeCalendarEvent( new Event( $event ), $formatter ) );
+		foreach ( $this->fetch_feed_events() as $event ) {
+			$calendar->addEvent( $this->make_calendar_event( new Event( $event ), $formatter ) );
 			break;
 		}
 
 		header( 'Content-Type: text/plain' );
-		$calendarExport = new CalendarExport( new CalendarStream, $formatter );
-		$calendarExport->addCalendar( $calendar );
-		#    $calendarExport->getStreamObject()->setDoImmediateOutput(true);
-		echo $calendarExport->getStream();
+		$export = new CalendarExport( new CalendarStream(), $formatter );
+		$export->addCalendar( $calendar );
+		echo $export->getStream(); // phpcs:ignore
 		exit();
 	}
 
@@ -184,76 +203,76 @@ class Feed {
 	 * Loads events from the events calendar database according to the plugin's settings.
 	 *
 	 * @return array An array of `WP_Post` objects.
+	 * @throws Exception If an encoding error happens.
 	 */
-	private function fetchFeedEvents(): array {
+	private function fetch_feed_events(): array {
 		$args = [
 			'post_type'   => 'mec-events',
-			'post_status' => get_option( 'mec-ics-private-events' ) ? [ "publish", "private" ] : [ "publish" ],
+			'post_status' => get_option( 'mec-ics-private-events' ) ? [
+				'publish',
+				'private',
+			] : [ 'publish' ],
 			'orderby'     => 'meta_value',
-			'meta_key'    => 'mec_start_date',
 			'order'       => 'ASC',
 		];
 
-		// Hard event limit
+		// Hard event limit.
 		$limit               = intval( get_option( 'mec-ics-event-limit' ) );
 		$args['numberposts'] = $limit <= 0 ? - 1 : $limit;
 
-
-		// Meta Query (start / end date)
+		// Meta Query (start / end date).
 		$meta_query = [];
 
-		/** @noinspection PhpUnhandledExceptionInspection */
-		$now    = new DateTime( "now", wp_timezone() );
+		$now    = new DateTime( 'now', wp_timezone() );
 		$past   = get_option( 'mec-ics-past-events', 90 );
 		$future = get_option( 'mec-ics-future-events', 365 );
 		if ( $past ) {
-			$pastDate = clone $now;
-			$pastDate . modify( sprintf( '-%d days', $past ) );
+			$past_date = clone $now;
+			$past_date->modify( sprintf( '-%d days', $past ) );
 			$meta_query[] = [
 				'key'     => 'mec_end_date',
 				'compare' => '>=',
-				'value'   => $pastDate,
+				'value'   => $past_date,
 				'type'    => 'DATE',
 			];
 		}
 		if ( $future ) {
-			$futureDate = clone $now;
-			$futureDate . modify( sprintf( '+%d days', $future ) );
+			$future_date = clone $now;
+			$future_date->modify( sprintf( '+%d days', $future ) );
 			$meta_query[] = [
 				'key'    => 'mec_start_date',
 				'copare' => '<=',
-				'value'  => $futureDate,
+				'value'  => $future_date,
 				'type'   => 'DATE',
 			];
 		}
 		if ( $meta_query ) {
 			$meta_query['relation'] = 'AND';
-			$args['meta_query']     = $meta_query;
+			$args['meta_query']     = $meta_query; // phpcs:ignore
 		}
-		var_dump( $past );
 
-		// Taxonomy Query (category filters)
+		// Taxonomy Query (category filters).
 		$tax_query = [];
 
-		$addTaxFilter = function ( $queryVar, $taxonomy ) use ( &$tax_query ) {
-			$filterValues = get_query_var( $queryVar );
-			if ( $filterValues ) {
+		$add_tax_filter = function ( $query_var, $taxonomy ) use ( &$tax_query ) {
+			$filter_values = get_query_var( $query_var );
+			if ( $filter_values ) {
 				$tax_query[] = [
 					'taxonomy' => $taxonomy,
 					'field'    => 'slug',
-					'terms'    => explode( ',', $filterValues ),
+					'terms'    => explode( ',', $filter_values ),
 				];
 			}
 		};
-		$addTaxFilter( 'tags', 'post_tag' );
-		$addTaxFilter( 'categories', 'mec_category' );
-		$addTaxFilter( 'labels', 'mec_label' );
-		$addTaxFilter( 'locations', 'mec_location' );
-		$addTaxFilter( 'organizers', 'mec_organizer' );
+		$add_tax_filter( 'tags', 'post_tag' );
+		$add_tax_filter( 'categories', 'mec_category' );
+		$add_tax_filter( 'labels', 'mec_label' );
+		$add_tax_filter( 'locations', 'mec_location' );
+		$add_tax_filter( 'organizers', 'mec_organizer' );
 
 		if ( $tax_query ) {
 			$tax_query['relation'] = 'AND';
-			$args['tax_query']     = $tax_query;
+			$args['tax_query']     = $tax_query; // phpcs:ignore
 		}
 
 		return get_posts( $args );
@@ -266,72 +285,69 @@ class Feed {
 	 * @param Formatter $formatter A formatter used for the calendar.
 	 *
 	 * @return CalendarEvent
-	 * @throws \Jsvrcek\ICS\Exception\CalendarEventException
+	 * @throws CalendarEventException If an encoding error occurs.
 	 */
-	private function makeCalendarEvent( Event $event, Formatter $formatter ): CalendarEvent {
-		$calEvent = new CalendarEvent();
-		$calEvent->setUid( sprintf( get_option( 'mec-ics-uid-format' ), $event->ID ) );
+	private function make_calendar_event( Event $event, Formatter $formatter ): CalendarEvent {
+		$cal_event = new CalendarEvent();
+		$cal_event->setUid( sprintf( get_option( 'mec-ics-uid-format' ), $event->ID ) );
 
-		// Creation, start and end date
-		$calEvent->setCreated( $this->dateFromTimestamp( get_the_date( 'U', $event->ID ) ) );
-		$calEvent->setLastModified( $this->dateFromTimestamp( get_the_modified_date( 'U', $event->ID ) ) );
+		// Creation, start and end date.
+		$cal_event->setCreated( $this->date_from_timestamp( get_the_date( 'U', $event->ID ) ) );
+		$cal_event->setLastModified(
+			$this->date_from_timestamp( get_the_modified_date( 'U', $event->ID ) )
+		);
 		$datetime = $event->get_datetime();
-		$calEvent->setStart( $this->dateFromTimestamp( $datetime['start']['timestamp'] ) );
-		$calEvent->setEnd( $this->dateFromTimestamp( $datetime['end']['timestamp'] ) );
-		$calEvent->setAllDay( boolval( get_post_meta( $event->ID, 'mec_allday', true ) ) );
+		$cal_event->setStart( $this->date_from_timestamp( $datetime['start']['timestamp'] ) );
+		$cal_event->setEnd( $this->date_from_timestamp( $datetime['end']['timestamp'] ) );
+		$cal_event->setAllDay( boolval( get_post_meta( $event->ID, 'mec_allday', true ) ) );
 
-		// Simple event metadata
-		$calEvent->setSummary( $event->get_title() );
-		$calEvent->setDescription( get_the_content( null, false, $event->ID ) );
-		$calEvent->setUrl( get_post_meta( $event->ID, 'mec_read_more', true ) );
-		if ( empty( $calEvent->getUrl() ) ) {
-			$calEvent->setUrl( get_permalink( $event->ID ) );
+		// Simple event metadata.
+		$cal_event->setSummary( $event->get_title() );
+		$cal_event->setDescription( get_the_content( null, false, $event->ID ) );
+		$cal_event->setUrl( get_post_meta( $event->ID, 'mec_read_more', true ) );
+		if ( empty( $cal_event->getUrl() ) ) {
+			$cal_event->setUrl( get_permalink( $event->ID ) );
 		}
-		$calEvent->setTransp( 'TRANSPARENT' ); // TODO: Maybe make this configurable.
+		$cal_event->setTransp( 'TRANSPARENT' ); // TODO: Maybe make this configurable.
 
-		// Status
-		if ( $event->data['post_status'] == "private" ) {
-			$calEvent->setClass( "PRIVATE" );
+		// Post Status.
+		if ( 'private' === $event->data['post_status'] ) {
+			$cal_event->setClass( 'PRIVATE' );
 		}
 		$status = get_post_meta( $event->ID, 'mec_event_status', true );
-		if ( $status == "EventCancelled" ) {
-			$calEvent->setStatus( "CANCELLED" );
+		if ( 'EventCancelled' === $status ) {
+			$cal_event->setStatus( 'CANCELLED' );
 		}
 
-		// Event location
-		$locationID = intval( get_post_meta( $event->ID, 'mec_location_id', true ) );
-		if ( array_key_exists( $locationID, $this->locations ) ) {
-			$calEvent->addLocation( $this->locations[ $locationID ] );
-			$additionalLocationIDs = get_post_meta( $event->ID, 'mec_additional_location_ids', true ) ?: [];
-			foreach ( $additionalLocationIDs as $id ) {
-				$calEvent->addLocation( $this->locations[ $id ] );
+		// Event location.
+		$location_id = intval( get_post_meta( $event->ID, 'mec_location_id', true ) );
+		if ( array_key_exists( $location_id, $this->locations ) ) {
+			$cal_event->addLocation( $this->locations[ $location_id ] );
+			$extra_location_ids = get_post_meta( $event->ID, 'mec_additional_location_ids', true ) ?: []; // phpcs:ignore
+			foreach ( $extra_location_ids as $id ) {
+				$cal_event->addLocation( $this->locations[ $id ] );
 			}
 
-			$geo = $this->geos[ $locationID ];
+			$geo = $this->geos[ $location_id ];
 			if ( $geo ) {
-				$calEvent->setGeo( $geo );
+				$cal_event->setGeo( $geo );
 			}
 		}
 
-		// Organizer
-		$organizerID = intval( get_post_meta( $event->ID, 'mec_organizer_id', true ) );
-		if ( array_key_exists( $organizerID, $this->organizers ) ) {
-			$calEvent->setOrganizer( $this->organizers[ $organizerID ] );
+		// Organizer.
+		$organizer_id = intval( get_post_meta( $event->ID, 'mec_organizer_id', true ) );
+		if ( array_key_exists( $organizer_id, $this->organizers ) ) {
+			$cal_event->setOrganizer( $this->organizers[ $organizer_id ] );
 		}
 
-		// Appearance
-		$calEvent->setColor( get_post_meta( $event->ID, 'mec_color', true ) );
+		// Appearance.
+		$cal_event->setColor( get_post_meta( $event->ID, 'mec_color', true ) );
 		$image = get_the_post_thumbnail_url( $event->ID, 'full' );
 		if ( $image ) {
-			$calEvent->setImage( [
-				'VALUE' => 'URI',
-				'URI'   => $image,
-			] );
+			$cal_event->setImage( [ 'VALUE' => 'URI', 'URI' => $image ] );
 		}
 
-		// TODO: Support recurring events
-
-		return $calEvent;
+		return $cal_event;
 	}
 
 	/**
@@ -341,11 +357,10 @@ class Feed {
 	 *
 	 * @return DateTime
 	 */
-	private function dateFromTimestamp( int $timestamp ): DateTime {
+	private function date_from_timestamp( int $timestamp ): DateTime {
 		$datetime = new DateTime();
 		$datetime->setTimestamp( $timestamp );
 
-		# $datetime->setTimezone(wp_timezone());
 		return $datetime;
 	}
 }

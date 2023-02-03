@@ -1,6 +1,6 @@
 {
   "name": "lmr-hh/mec-ics",
-  "description": "Exposes a public ICS URL for events in the modern events calendar.",
+  "description": "ICS Feed for Modern Events Calendar WordPress plugin.",
   "type": "wordpress-plugin",
   "license": "MIT",
   "autoload": {
@@ -15,15 +15,25 @@
     }
   ],
   "scripts": {
+    "lint": "./vendor/bin/phpcs includes --ignore=index.php",
     "extract-strings": "./scripts/extract-strings.sh",
     "compile-languages": "./vendor/bin/wp i18n make-mo ./languages"
   },
   "require": {
+    "php": "^7.4|^8.0",
     "jsvrcek/ics": "^0.8.4",
     "yahnis-elsts/plugin-update-checker": "^5.0"
   },
   "require-dev": {
     "wp-cli/wp-cli-bundle": "^2.7",
-    "johnpbloch/wordpress-core": "^6.1"
+    "johnpbloch/wordpress-core": "^6.1",
+    "squizlabs/php_codesniffer": "^3.7",
+    "wp-coding-standards/wpcs": "^2.3",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   }
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<ruleset name="wp-concerts">
+    <!-- These are fixes for the WP Coding Standards 2.3.0 on PHP 8.1 -->
+    <config name="text_domain" value=""/>
+    <config name="prefixes" value=""/>
+    <config name="minimum_supported_wp_version" value=""/>
+
+    <rule ref="WordPress">
+        <!-- Do not enforce class-* style filenames for classes. -->
+        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+    </rule>
+    <!--
+    The WordPress Coding Standards state that all class files should start with 'class-'. We follow
+    the PSR-0 standard for naming class files, because we are using autoloading via Composer.
+    -->
+    <rule ref="WordPress.Files.FileName">
+        <properties>
+            <property name="strict_class_file_names" value="false"/>
+        </properties>
+    </rule>
+
+    <!--
+    Line length
+    Lines should be 100 chars long at max (triggers warning),
+    and should in no case exceed 120 characters (triggers error).
+    -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="100"/>
+            <property name="absoluteLineLimit" value="120"/>
+        </properties>
+    </rule>
+
+    <!-- Require strict typing in each file. -->
+    <rule ref="Generic.PHP.RequireStrictTypes"/>
+
+    <!-- Allow short array syntax -->
+    <rule ref="WordPress-Extra">
+        <exclude name="WordPress.Arrays.ArrayDeclarationSpacing"/>
+        <exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+    </rule>
+
+    <!--
+    Hook Names
+    While the WordPress Coding Standards state that hook names should be separated by
+    underscores, an opinionated approach used by plugins like Advanced Custom Fields is to use
+    '/' to namespace hooks.
+    @link https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties#custom-word-delimiters-in-hook-names
+    -->
+    <rule ref="WordPress.NamingConventions.ValidHookName">
+        <properties>
+            <property name="additionalWordDelimiters" value="/"/>
+        </properties>
+    </rule>
+
+    <!-- Use colors in output. -->
+    <arg name="colors"/>
+
+    <!-- Show sniff names and progress. -->
+    <arg value="sp"/>
+</ruleset>
