@@ -74,6 +74,9 @@ composer install --no-dev --no-interaction --working-dir="$target"
 log "==> Creating Optimized Autoloader"
 composer dump-autoload --classmap-authoritative --working-dir="$target"
 
+log "==> Generating Translations"
+./vendor/bin/wp i18n make-mo "$target/languages"
+
 log "==> Generating Metadata"
 sed "s/{{PLUGIN_VERSION}}/Version:           $version/g" "./mec-ics.php" > "$target/$slug.php"
 

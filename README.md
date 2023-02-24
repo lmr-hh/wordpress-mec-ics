@@ -4,7 +4,7 @@ This WordPress plugin generates a ICS feed from events in the [Modern Events Cal
 
 ## Installation & Updating
 
-Install the plugin by downloading the `mec-ics-<version>.zip` from the latest release and install the plugin manually.
+Install the plugin by downloading the `mec-ics-<version>.zip` from the [latest release](https://github.com/lmr-hh/wordpress-mec-ics/releases/latest) and install the plugin manually.
 
 The plugin can be updated to future GitHub releases using the integrated WordPress update. This is implemented via the [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker).
 
