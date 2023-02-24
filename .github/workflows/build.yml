@@ -53,7 +53,7 @@ jobs:
           php-version: 8.2
           tools: composer
       - name: Install dependencies
-        run: composer install --no-dev --no-progress
+        run: composer install --no-progress
       - name: Build Plugin
         run: composer run-script build -- --version "$VERSION" --zip --filename "$FILENAME"
         env:
