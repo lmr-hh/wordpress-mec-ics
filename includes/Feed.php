@@ -12,8 +12,6 @@ namespace LMR\MecIcs;
 use DateTime;
 use Exception;
 use Jsvrcek\ICS\Exception\CalendarEventException;
-use \MEC\Events\Event;
-
 use \Jsvrcek\ICS\Model\Calendar;
 use \Jsvrcek\ICS\Model\CalendarEvent;
 use \Jsvrcek\ICS\Model\Description\Location;
@@ -22,6 +20,7 @@ use \Jsvrcek\ICS\Model\Relationship\Organizer;
 use \Jsvrcek\ICS\CalendarExport;
 use \Jsvrcek\ICS\CalendarStream;
 use \Jsvrcek\ICS\Utility\Formatter;
+use WP_Post;
 
 /**
  * This class implements generating the ICS feed.
@@ -188,8 +187,7 @@ class Feed {
 		$calendar->setTimezone( wp_timezone() );
 
 		foreach ( $this->fetch_feed_events() as $event ) {
-			$calendar->addEvent( $this->make_calendar_event( new Event( $event ), $formatter ) );
-			break;
+			$calendar->addEvent( $this->make_calendar_event( $event ) );
 		}
 
 		header( 'Content-Type: text/plain' );
@@ -213,6 +211,8 @@ class Feed {
 				'private',
 			] : [ 'publish' ],
 			'orderby'     => 'meta_value',
+			'meta_key'    => 'mec_start_date', // phpcs:ignore
+			'meta_type'   => 'DATE',
 			'order'       => 'ASC',
 		];
 
@@ -232,7 +232,7 @@ class Feed {
 			$meta_query[] = [
 				'key'     => 'mec_end_date',
 				'compare' => '>=',
-				'value'   => $past_date,
+				'value'   => $past_date->format( 'Y-m-d' ),
 				'type'    => 'DATE',
 			];
 		}
@@ -240,10 +240,10 @@ class Feed {
 			$future_date = clone $now;
 			$future_date->modify( sprintf( '+%d days', $future ) );
 			$meta_query[] = [
-				'key'    => 'mec_start_date',
-				'copare' => '<=',
-				'value'  => $future_date,
-				'type'   => 'DATE',
+				'key'     => 'mec_start_date',
+				'compare' => '<=',
+				'value'   => $future_date->format( 'Y-m-d' ),
+				'type'    => 'DATE',
 			];
 		}
 		if ( $meta_query ) {
@@ -281,37 +281,35 @@ class Feed {
 	/**
 	 * Converts the specified `$event` into a `CalendarEvent`.
 	 *
-	 * @param Event     $event     An event from the events calendar.
-	 * @param Formatter $formatter A formatter used for the calendar.
+	 * @param WP_Post $event An event from the events calendar.
 	 *
 	 * @return CalendarEvent
 	 * @throws CalendarEventException If an encoding error occurs.
 	 */
-	private function make_calendar_event( Event $event, Formatter $formatter ): CalendarEvent {
+	private function make_calendar_event( WP_Post $event ): CalendarEvent {
 		$cal_event = new CalendarEvent();
 		$cal_event->setUid( sprintf( get_option( 'mec-ics-uid-format' ), $event->ID ) );
 
 		// Creation, start and end date.
-		$cal_event->setCreated( $this->date_from_timestamp( get_the_date( 'U', $event->ID ) ) );
+		$cal_event->setCreated( $this->date_from_timestamp( get_the_date( 'U', $event ) ) );
 		$cal_event->setLastModified(
-			$this->date_from_timestamp( get_the_modified_date( 'U', $event->ID ) )
+			$this->date_from_timestamp( get_the_modified_date( 'U', $event ) )
 		);
-		$datetime = $event->get_datetime();
-		$cal_event->setStart( $this->date_from_timestamp( $datetime['start']['timestamp'] ) );
-		$cal_event->setEnd( $this->date_from_timestamp( $datetime['end']['timestamp'] ) );
+		$cal_event->setStart( $this->date_from_event( $event, 'start' ) );
+		$cal_event->setEnd( $this->date_from_event( $event, 'end' ) );
 		$cal_event->setAllDay( boolval( get_post_meta( $event->ID, 'mec_allday', true ) ) );
 
 		// Simple event metadata.
-		$cal_event->setSummary( $event->get_title() );
-		$cal_event->setDescription( get_the_content( null, false, $event->ID ) );
+		$cal_event->setSummary( get_the_title( $event ) );
+		$cal_event->setDescription( get_the_content( null, false, $event ) );
 		$cal_event->setUrl( get_post_meta( $event->ID, 'mec_read_more', true ) );
 		if ( empty( $cal_event->getUrl() ) ) {
-			$cal_event->setUrl( get_permalink( $event->ID ) );
+			$cal_event->setUrl( get_permalink( $event ) );
 		}
 		$cal_event->setTransp( 'TRANSPARENT' ); // TODO: Maybe make this configurable.
 
 		// Post Status.
-		if ( 'private' === $event->data['post_status'] ) {
+		if ( 'private' === get_post_status( $event ) ) {
 			$cal_event->setClass( 'PRIVATE' );
 		}
 		$status = get_post_meta( $event->ID, 'mec_event_status', true );
@@ -342,12 +340,45 @@ class Feed {
 
 		// Appearance.
 		$cal_event->setColor( get_post_meta( $event->ID, 'mec_color', true ) );
-		$image = get_the_post_thumbnail_url( $event->ID, 'full' );
+		$image = get_the_post_thumbnail_url( $event, 'full' );
 		if ( $image ) {
 			$cal_event->setImage( [ 'VALUE' => 'URI', 'URI' => $image ] );
 		}
 
 		return $cal_event;
+	}
+
+	/**
+	 * Returns a custom date form the specified `event`.
+	 *
+	 * @param WP_Post $event The event whose dates are to be inspected.
+	 * @param string  $type  Either `"start"` or `"end"` to get either the start or the end date of
+	 *                       the event.
+	 *
+	 * @return DateTime The requested date of the event.
+	 */
+	private function date_from_event( WP_Post $event, string $type ): DateTime {
+		$raw_date = get_post_meta( $event->ID, 'mec_' . $type . '_datetime', true );
+		if ( $raw_date ) {
+			try {
+				return new DateTime( $raw_date );
+			} catch ( Exception $e ) { // phpcs:ignore
+				// If parsing the date fails we continue below.
+			}
+		}
+
+		$date    = get_post_meta( $event->ID, 'mec_' . $type . '_date', true );
+		$hours   = get_post_meta( $event->ID, 'mec_' . $type . '_time_hour', true );
+		$minutes = get_post_meta( $event->ID, 'mec_' . $type . '_time_minutes', true );
+		$ampm    = get_post_meta( $event->ID, 'mec_' . $type . '_time_ampm', true );
+
+		$hours_str   = sprintf( '%02d', $hours );
+		$minutes_str = sprintf( '%02d', $minutes );
+
+		return DateTime::createFromFormat(
+			'Y-n-j h:i A',
+			"{$date} {$hours_str}:{$minutes_str} {$ampm}"
+		);
 	}
 
 	/**
