@@ -92,7 +92,7 @@ class Plugin {
 	 * @return void
 	 */
 	public function check_dependencies() {
-		if ( ! class_exists( '\\MEC\\Events\\EventsQuery' ) ) {
+		if ( ! defined( 'MEC_VERSION' ) ) {
 			add_action( 'admin_notices', [ $this, 'render_dependency_error' ] );
 		}
 	}
@@ -106,7 +106,7 @@ class Plugin {
 		<div class="notice notice-error">
 			<p>
 				<?php
-				wp_kses(
+				echo wp_kses(
 					__(
 						'Modern Events Calendar plugin not found. The plugin <b>ICS for Modern
 Events Calendar</b> requires an active installation of the Modern Events Calendar plugin.',
