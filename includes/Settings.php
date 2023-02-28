@@ -14,6 +14,8 @@ namespace LMR\MecIcs;
  */
 class Settings {
 
+	const DEFAULT_PRODUCT_ID = '-//Landesmusikrat Hamburg//MEC-ICS//DE';
+
 	/**
 	 * Create and initialize a new <code>Settings</code> instance. This will also register the
 	 * required hooks to display the page.
@@ -168,7 +170,7 @@ typically won't be seed by the end users.",
 			'mec-ics-prodid',
 			[
 				'type'    => 'string',
-				'default' => '-//Landesmusikrat Hamburg//MEC-ICS//DE',
+				'default' => self::DEFAULT_PRODUCT_ID,
 			]
 		);
 		register_setting(

@@ -180,8 +180,8 @@ class Feed {
 		$this->load_organizers( $formatter );
 
 		$calendar = new Calendar();
-		$calendar->setProdId( get_option( 'mec-ics-prodid' ) );
-		$calendar->setName( get_option( 'mec-ics-feed-name' ) );
+		$calendar->setProdId( get_option( 'mec-ics-prodid', Settings::DEFAULT_PRODUCT_ID ) );
+		$calendar->setName( get_option( 'mec-ics-feed-name', get_bloginfo( 'name' ) ) );
 		// TODO: Maybe allow setting an image for the whole calendar.
 		// TODO: Maybe allow setting the calendar's color.
 		$calendar->setTimezone( wp_timezone() );
@@ -206,7 +206,7 @@ class Feed {
 	private function fetch_feed_events(): array {
 		$args = [
 			'post_type'   => 'mec-events',
-			'post_status' => get_option( 'mec-ics-private-events' ) ? [
+			'post_status' => get_option( 'mec-ics-private-events', false ) ? [
 				'publish',
 				'private',
 			] : [ 'publish' ],
@@ -217,7 +217,7 @@ class Feed {
 		];
 
 		// Hard event limit.
-		$limit               = intval( get_option( 'mec-ics-event-limit' ) );
+		$limit               = intval( get_option( 'mec-ics-event-limit', 0 ) );
 		$args['numberposts'] = $limit <= 0 ? - 1 : $limit;
 
 		// Meta Query (start / end date).
@@ -288,7 +288,15 @@ class Feed {
 	 */
 	private function make_calendar_event( WP_Post $event ): CalendarEvent {
 		$cal_event = new CalendarEvent();
-		$cal_event->setUid( sprintf( get_option( 'mec-ics-uid-format' ), $event->ID ) );
+		$cal_event->setUid(
+			sprintf(
+				get_option(
+					'mec-ics-uid-format',
+					'%d@' . wp_unslash( $_SERVER['SERVER_NAME'] ) // phpcs:ignore
+				),
+				$event->ID
+			)
+		);
 
 		// Creation, start and end date.
 		$cal_event->setCreated( $this->date_from_timestamp( get_the_date( 'U', $event ) ) );
