@@ -87,6 +87,6 @@ if [[ "$zip" ]]; then
   fi
   [[ $filename == *.zip ]] || filename+=.zip
   pushd "$build_dir" >/dev/null
-  zip -FSr9 "$filename" ./*
+  zip -FSr9 "$filename" "./$slug"
   popd >/dev/null
 fi
