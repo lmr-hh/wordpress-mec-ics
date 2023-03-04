@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "jsvrcek/ics",
-            "version": "0.8.4",
+            "version": "0.8.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jasvrcek/ICS.git",
-                "reference": "e2156614096d58fa8a92609e70002808c2374158"
+                "reference": "11a24ac95648d720a1370c5bb20988b1739a63a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jasvrcek/ICS/zipball/e2156614096d58fa8a92609e70002808c2374158",
-                "reference": "e2156614096d58fa8a92609e70002808c2374158",
+                "url": "https://api.github.com/repos/jasvrcek/ICS/zipball/11a24ac95648d720a1370c5bb20988b1739a63a4",
+                "reference": "11a24ac95648d720a1370c5bb20988b1739a63a4",
                 "shasum": ""
             },
             "require": {
@@ -54,9 +54,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jasvrcek/ICS/issues",
-                "source": "https://github.com/jasvrcek/ICS/tree/0.8.4"
+                "source": "https://github.com/jasvrcek/ICS/tree/0.8.5"
             },
-            "time": "2022-06-03T14:24:07+00:00"
+            "time": "2023-01-17T22:16:11+00:00"
         },
         {
             "name": "yahnis-elsts/plugin-update-checker",
