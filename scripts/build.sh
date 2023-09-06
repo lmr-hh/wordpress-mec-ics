@@ -47,18 +47,6 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ -z "$version" ]]; then
-  tag=$(git describe --tags --abbrev=0)
-  current=$(git rev-parse HEAD)
-  commits=$(git rev-list "$tag..$current" --count)
-  version="$tag-dev"
-  if [ "$commits" -gt "0" ]; then
-    version="$version.$commits"
-  fi
-  echo "No version number provided. Guessing version from git: $version" >&2
-fi
-
-
 version="${version#v}"
 target="$build_dir/$slug"
 
@@ -83,7 +71,11 @@ sed "s/{{PLUGIN_VERSION}}/Version:           $version/g" "./mec-ics.php" > "$tar
 if [[ "$zip" ]]; then
   log "==> Creating Zip File"
   if [[ -z "$filename" ]]; then
-    filename="$slug-$version"
+    if [[ "$version" ]]; then
+      filename="$slug-$version"
+    else
+      filename="$slug"
+    fi
   fi
   [[ $filename == *.zip ]] || filename+=.zip
   pushd "$build_dir" >/dev/null
