@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "66cd1e816c7515d8116b1deb504d285e",
+    "content-hash": "18c854ef4a0a8643c31a00995b95a35c",
     "packages": [
         {
             "name": "jsvrcek/ics",
