@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "66cd1e816c7515d8116b1deb504d285e",
+    "content-hash": "fe6f35a6c85653854cbeddc26d62ef2a",
     "packages": [
         {
             "name": "jsvrcek/ics",
@@ -4877,7 +4877,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.4|^8.0"
+        "php": "8.2.10"
     },
     "platform-dev": [],
     "plugin-api-version": "2.6.0"
