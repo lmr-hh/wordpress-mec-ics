@@ -12,14 +12,14 @@ namespace LMR\MecIcs;
 use DateTime;
 use Exception;
 use Jsvrcek\ICS\Exception\CalendarEventException;
-use \Jsvrcek\ICS\Model\Calendar;
-use \Jsvrcek\ICS\Model\CalendarEvent;
-use \Jsvrcek\ICS\Model\Description\Location;
-use \Jsvrcek\ICS\Model\Description\Geo;
-use \Jsvrcek\ICS\Model\Relationship\Organizer;
-use \Jsvrcek\ICS\CalendarExport;
-use \Jsvrcek\ICS\CalendarStream;
-use \Jsvrcek\ICS\Utility\Formatter;
+use Jsvrcek\ICS\Model\Calendar;
+use Jsvrcek\ICS\Model\CalendarEvent;
+use Jsvrcek\ICS\Model\Description\Location;
+use Jsvrcek\ICS\Model\Description\Geo;
+use Jsvrcek\ICS\Model\Relationship\Organizer;
+use Jsvrcek\ICS\CalendarExport;
+use Jsvrcek\ICS\CalendarStream;
+use Jsvrcek\ICS\Utility\Formatter;
 use WP_Post;
 
 /**

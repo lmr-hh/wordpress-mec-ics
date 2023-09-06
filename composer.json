@@ -30,13 +30,13 @@
   "require": {
     "php": "^7.4|^8.0",
     "jsvrcek/ics": "^0.8.4",
-    "yahnis-elsts/plugin-update-checker": "^5.0"
+    "yahnis-elsts/plugin-update-checker": "^5.2"
   },
   "require-dev": {
     "wp-cli/wp-cli-bundle": "^2.7",
     "johnpbloch/wordpress-core": "^6.1",
     "squizlabs/php_codesniffer": "^3.7",
-    "wp-coding-standards/wpcs": "^2.3",
+    "wp-coding-standards/wpcs": "^3.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
   },
   "config": {

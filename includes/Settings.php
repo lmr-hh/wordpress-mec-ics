@@ -508,7 +508,7 @@ events have the same UID it may confuse some ICS clients.',
 			'mec-intro',
 			__( 'ICS Feed Settings', 'mec-ics' ),
 			__( 'ICS Feed', 'mec-ics' ),
-			'administrator',
+			'manage_options',
 			'mec-ics-settings',
 			[ $this, 'render_settings_page' ],
 			10
