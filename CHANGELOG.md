@@ -15,6 +15,12 @@ Changes in this section will be included in the next release.
 
 ### Fixed
 
+## [0.2.0] - 2024-05-07
+
+### Changed
+
+- Updated Dependencies
+
 ## [0.1.3] - 2023-02-28
 
 ### Changed
@@ -45,6 +51,7 @@ This is the first working release of this project.
 - Implement automatic updates
 
 [Unreleased]: https://github.com/lmr-hh/wordpress-mec-ics/compare/v0.1.3...HEAD
-[0.1.2]: https://github.com/lmr-hh/wordpress-mec-ics/compare/v0.1.2...v0.1.3
+[0.2.0]: https://github.com/lmr-hh/wordpress-mec-ics/compare/v0.1.3...v0.2.0
+[0.1.3]: https://github.com/lmr-hh/wordpress-mec-ics/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/lmr-hh/wordpress-mec-ics/compare/v0.1.0...v0.1.2
 [0.0.1]: https://github.com/lmr-hh/wordpress-mec-ics/releases/tag/v0.1.0
