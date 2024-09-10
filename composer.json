@@ -34,7 +34,7 @@
   },
   "require-dev": {
     "wp-cli/wp-cli-bundle": "2.11.0",
-    "johnpbloch/wordpress-core": "6.6.1",
+    "johnpbloch/wordpress-core": "6.6.2",
     "squizlabs/php_codesniffer": "3.10.2",
     "wp-coding-standards/wpcs": "3.1.0",
     "dealerdirect/phpcodesniffer-composer-installer": "1.0.0"
