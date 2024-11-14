@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f16affec1215d76ebab980951778dbaf",
+    "content-hash": "be0a3e7ed1d238caca26673f555d8c27",
     "packages": [
         {
             "name": "jsvrcek/ics",
@@ -1041,16 +1041,16 @@
         },
         {
             "name": "johnpbloch/wordpress-core",
-            "version": "6.6.2",
+            "version": "6.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/johnpbloch/wordpress-core.git",
-                "reference": "dbb5f96e78905e26cbfb4c4796d9d5b92c451a81"
+                "reference": "3b6bdf11cf72ecb3777914259604dda961798ce2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/johnpbloch/wordpress-core/zipball/dbb5f96e78905e26cbfb4c4796d9d5b92c451a81",
-                "reference": "dbb5f96e78905e26cbfb4c4796d9d5b92c451a81",
+                "url": "https://api.github.com/repos/johnpbloch/wordpress-core/zipball/3b6bdf11cf72ecb3777914259604dda961798ce2",
+                "reference": "3b6bdf11cf72ecb3777914259604dda961798ce2",
                 "shasum": ""
             },
             "require": {
@@ -1058,7 +1058,7 @@
                 "php": ">=7.2.24"
             },
             "provide": {
-                "wordpress/core-implementation": "6.6.2"
+                "wordpress/core-implementation": "6.7.0"
             },
             "type": "wordpress-core",
             "notification-url": "https://packagist.org/downloads/",
@@ -1085,7 +1085,7 @@
                 "source": "https://core.trac.wordpress.org/browser",
                 "wiki": "https://codex.wordpress.org/"
             },
-            "time": "2024-09-10T15:26:41+00:00"
+            "time": "2024-11-14T16:46:24+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -5169,12 +5169,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": "^7.4|^8.0"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
