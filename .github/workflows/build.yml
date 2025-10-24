@@ -38,7 +38,7 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
           FILENAME: ${{ steps.version.outputs.filename }}.zip
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ steps.version.outputs.filename }}
           path: |
