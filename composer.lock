@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a8c06b980dd205a9563b36620418782a",
+    "content-hash": "e15938e833ad1364e4f80fef3f9e30d4",
     "packages": [
         {
             "name": "jsvrcek/ics",
-            "version": "0.8.5",
+            "version": "0.8.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jasvrcek/ICS.git",
-                "reference": "11a24ac95648d720a1370c5bb20988b1739a63a4"
+                "reference": "4613219919d81d76678d65b9187643bcba035809"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jasvrcek/ICS/zipball/11a24ac95648d720a1370c5bb20988b1739a63a4",
-                "reference": "11a24ac95648d720a1370c5bb20988b1739a63a4",
+                "url": "https://api.github.com/repos/jasvrcek/ICS/zipball/4613219919d81d76678d65b9187643bcba035809",
+                "reference": "4613219919d81d76678d65b9187643bcba035809",
                 "shasum": ""
             },
             "require": {
@@ -54,9 +54,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jasvrcek/ICS/issues",
-                "source": "https://github.com/jasvrcek/ICS/tree/0.8.5"
+                "source": "https://github.com/jasvrcek/ICS/tree/0.8.6"
             },
-            "time": "2023-01-17T22:16:11+00:00"
+            "time": "2026-01-26T18:55:30+00:00"
         },
         {
             "name": "yahnis-elsts/plugin-update-checker",
