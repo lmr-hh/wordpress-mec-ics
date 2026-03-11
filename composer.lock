@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "650b03234814389260235f498c9c780c",
+    "content-hash": "5e31271626ec73683ae513ce1f44a0e6",
     "packages": [
         {
             "name": "jsvrcek/ics",
@@ -1059,16 +1059,16 @@
         },
         {
             "name": "johnpbloch/wordpress-core",
-            "version": "6.9.2",
+            "version": "6.9.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/johnpbloch/wordpress-core.git",
-                "reference": "28da5acae840224b3c22ae78c204ae5e15b74701"
+                "reference": "13e02e0047ca5c8ec8dc837c2de8a5bd3583b879"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/johnpbloch/wordpress-core/zipball/28da5acae840224b3c22ae78c204ae5e15b74701",
-                "reference": "28da5acae840224b3c22ae78c204ae5e15b74701",
+                "url": "https://api.github.com/repos/johnpbloch/wordpress-core/zipball/13e02e0047ca5c8ec8dc837c2de8a5bd3583b879",
+                "reference": "13e02e0047ca5c8ec8dc837c2de8a5bd3583b879",
                 "shasum": ""
             },
             "require": {
@@ -1076,7 +1076,7 @@
                 "php": ">=7.2.24"
             },
             "provide": {
-                "wordpress/core-implementation": "6.9.2"
+                "wordpress/core-implementation": "6.9.4"
             },
             "type": "wordpress-core",
             "notification-url": "https://packagist.org/downloads/",
@@ -1103,7 +1103,7 @@
                 "source": "https://core.trac.wordpress.org/browser",
                 "wiki": "https://codex.wordpress.org/"
             },
-            "time": "2026-03-10T15:41:10+00:00"
+            "time": "2026-03-11T15:27:36+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
